@@ -1,10 +1,3 @@
-let table = [
-  [6, 7, 3, 4, 70],
-  [3, 5, 6, 5, 45],
-  [4, 3, 4, 3, 80],
-  [70, 45, 45, 35, 220]
-];
-
 let table2 = [
   [25, 24, 28, 13, 130],
   [17, 30, 15, 26, 200],
@@ -41,10 +34,10 @@ let table6 = [
 ];
 
 let table7 = [
-  [1, 2, 3, 4, 60],
-  [4, 3, 2, 0, 80],
-  [0, 2, 2, 1, 100],
-  [40, 60, 80, 60, 240]
+  [6, 7, 3, 4, 70],
+  [3, 5, 6, 5, 45],
+  [4, 3, 4, 3, 80],
+  [70, 45, 45, 35, 220]
 ];
 
 let table8 = [
@@ -61,6 +54,15 @@ let table9 = [
   [80, 30, 40, 50, 200]
 ];
 
-let zt = new ZT(table7);
-let tabela = zt.katPolnocnoZachodni();
-console.table(tabela);
+let table = [
+  [1, 2, 3, 4, 60],
+  [4, 3, 2, 0, 80],
+  [0, 2, 2, 1, 100],
+  [40, 60, 80, 60, 240]
+];
+const zt = new ZT(table);
+zt.katPolnocnoZachodni();
+
+while (!zt.optymalne) {
+  zt.kolejnyKrok();
+}
