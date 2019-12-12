@@ -11,4 +11,9 @@ let table = [
 ];
 const zt = new ZT(table);
 zt.katPolnocnoZachodni();
+
+while (!zt.optymalne) {
+  zt.kolejnyKrok();
+}
+
 ```
