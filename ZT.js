@@ -5,6 +5,7 @@ class ZT {
     this.Wiersz = [];
     this.Koszty = [];
     this.table = [];
+    this.optymalne = false;
 
     // Filling Kolumna table with last column from this.table table
     for (let i = 0; i < this.Tabela.length - 1; i++) {
@@ -191,7 +192,7 @@ class ZT {
     return cykl;
   };
 
-  rozwiazanieDopuszczalne = () => {
+  kolejnyKrok = () => {
     let cykl = this.cykl();
     let temp = this.table.map(e => e.map(e => e));
     console.log(
@@ -200,6 +201,7 @@ class ZT {
     if (cykl == 0) {
       console.log("optymalne");
       console.table(this.table);
+      this.optymalne = true;
       return this.table;
     } else {
       let min = cykl[1].value;
