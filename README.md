@@ -19,4 +19,4 @@ while (!zagadnienie.optymalne) {
 }
 ```
 
-ten kod należy umieścić w pliku app.js lub wkleić w
+ten kod należy umieścić w pliku app.js lub wkleić do konsoli
