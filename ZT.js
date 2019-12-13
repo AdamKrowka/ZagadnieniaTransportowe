@@ -195,9 +195,7 @@ class ZT {
   kolejnyKrok = () => {
     let cykl = this.cykl();
     let temp = this.table.map(e => e.map(e => e));
-    console.log(
-      "==================================================================================================="
-    );
+
     if (cykl == 0) {
       console.log("optymalne");
       console.table(this.table);
