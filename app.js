@@ -70,4 +70,3 @@ let table = [
   [15, 14, 26, 15, 70]
 ];
 const zt = new ZTT(table10);
-zt.katPolnocnoZachodni();
