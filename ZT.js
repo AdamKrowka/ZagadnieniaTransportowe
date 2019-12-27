@@ -1,23 +1,27 @@
-class ZT {
+class ZTT {
   constructor(tabela) {
     this.Tabela = tabela;
-    this.Kolumna = [];
-    this.Wiersz = [];
+    this.Rozwiazanie = [];
     this.Koszty = [];
-    this.table = [];
-    this.optymalne = false;
+    this.Popyt = [];
+    this.Podaz = [];
+    this.Optymalne = false;
+    this.Cykl = [];
+    this.cyklRoz = false;
 
-    // Filling Kolumna table with last column from this.table table
+    // Filling Kolumna/Podaż table with last column from this.table table
+    // Uzupełnianie Tabeli Podaż ostatnią columną z tabeli wprowadzonej do programu
     for (let i = 0; i < this.Tabela.length - 1; i++) {
-      this.Kolumna.push(this.Tabela[i][this.Tabela[i].length - 1]);
+      this.Podaz.push(this.Tabela[i][this.Tabela[i].length - 1]);
     }
 
-    // filling Wiersz table with last row from this.table table
+    // filling Wiersz/Popyt table with last row from this.table table
+    // Uzupełnianie Tabeli Popyt ostatnim wierszem z tabeli wprowadzonej do programu
     for (let i = 0; i < this.Tabela[this.Tabela.length - 1].length - 1; i++) {
-      this.Wiersz.push(this.Tabela[this.Tabela.length - 1][i]);
+      this.Popyt.push(this.Tabela[this.Tabela.length - 1][i]);
     }
 
-    // Filling Koszty table
+    // Uzupełnianie tabeli Kosztów
     for (let i = 0; i < this.Tabela.length - 1; i++) {
       let row = [];
       for (let j = 0; j < this.Tabela[i].length - 1; j++)
@@ -30,199 +34,268 @@ class ZT {
 
   katPolnocnoZachodni = () => {
     let wynik = this.Koszty.map(wiersz => wiersz.map(() => null));
-    let kolumna = this.Kolumna.map(elem => elem);
-    let wiersz = this.Wiersz.map(elem => elem);
+    let podaz = this.Podaz.map(elem => elem);
+    let popyt = this.Popyt.map(elem => elem);
 
     wynik.forEach((linia, x) =>
       linia.forEach((element, y) => {
         if (wynik[x][y] == null)
-          if (kolumna[x] != 0 && wiersz[y] != 0) {
-            let wartosc = kolumna[x] > wiersz[y] ? wiersz[y] : kolumna[x];
+          if (podaz[x] != 0 && popyt[y] != 0) {
+            let wartosc = podaz[x] > popyt[y] ? popyt[y] : podaz[x];
             wynik[x][y] = wartosc;
-            kolumna[x] -= wartosc;
-            wiersz[y] -= wartosc;
+            podaz[x] -= wartosc;
+            popyt[y] -= wartosc;
           }
-        if (kolumna[x] == 0 && wiersz[y] == 0) {
+        if (podaz[x] == 0 && popyt[y] == 0) {
           if (x < wynik.length - 1) wynik[x + 1][y] = 0;
           else if (y < wynik[x].lenght - 1) wynik[x][y + 1] = 0;
         }
       })
     );
-    this.table = wynik;
-    return wynik;
+    console.table(wynik);
+    this.Rozwiazanie = wynik;
   };
 
-  czyPuste = table => {
+  // 2. Metoda Potencjału dla bazowych
+
+  bazowePotencjaly = () => {
+    let Y = this.Podaz.map(() => null);
+    let X = this.Popyt.map(() => null);
+
+    Y[0] = 0;
     let flag = false;
-    table.forEach(e => {
-      if (e == null) {
+    while (this.hasEmpty(Y) || this.hasEmpty(X)) {
+      flag = false;
+      for (let y = 0; y <= this.Rozwiazanie.length; y++) {
+        for (let x = 0; x <= this.Rozwiazanie[y].length; x++) {
+          if (this.Rozwiazanie[y][x] != null) {
+            if (X[x] != null ? Y[y] == null : Y[y] != null) {
+              if (X[x] == null) X[x] = this.Koszty[y][x] - Y[y];
+              else if (Y[y] == null) Y[y] = this.Koszty[y][x] - X[x];
+              flag = true;
+              break;
+            }
+          }
+        }
+        if (flag) break;
+      }
+    }
+    // console.log({ Y, X });
+    return { Y, X };
+  };
+
+  // 3. Metoda Potencjału dla kratek nie bazowych
+  nieBazowePotencjaly = () => {
+    const { X, Y } = this.bazowePotencjaly();
+    let potencjaly = this.Koszty.map(elem => elem.map(e => e));
+
+    this.Rozwiazanie.forEach((wiersz, y) =>
+      wiersz.forEach((elem, x) => {
+        if (this.Rozwiazanie[y][x] == null) {
+          potencjaly[y][x] = X[x] + Y[y];
+        }
+      })
+    );
+    return potencjaly;
+  };
+
+  // 3. Sprawdzenie optymalności netodą potencjałów
+  czyOptymalne = () => {
+    let jestDodatnie = false;
+    let potencjaly = this.nieBazowePotencjaly();
+    potencjaly.forEach((wiersz, y) =>
+      wiersz.forEach((elem, x) => {
+        potencjaly[y][x] = potencjaly[y][x] - this.Koszty[y][x];
+        if (potencjaly[y][x] > 0) jestDodatnie = true;
+      })
+    );
+    if (!jestDodatnie) {
+      console.log("optymalne");
+      this.Optymalne = true;
+      return this.Rozwiazanie;
+    } else {
+      console.log("nie optymalne");
+      this.najDodatnia(potencjaly);
+      this.moveTValue();
+      return this.Rozwiazanie;
+    }
+  };
+
+  najDodatnia = potencjaly => {
+    console.log("liczę największy dodatni potencjał");
+    let maxVal = 0;
+    let max = [];
+    let newMax;
+    let path = [];
+    let start;
+    potencjaly.forEach((wiersz, y) => {
+      wiersz.forEach((elem, x) => {
+        if (elem == maxVal) max.push({ y, x });
+        else if (elem > maxVal) {
+          max = [];
+          maxVal = elem;
+          max.push({ y, x });
+        }
+      });
+    });
+    if (max.length == 1) {
+      console.log("element maxymalny to:", max[0]);
+      start = max[0];
+    } else {
+      console.log("więcej niż jeden maxymalny");
+      let minKoszt = max[0].koszt;
+      newMax = max[0];
+      max.forEach(e => {
+        if (e.koszt < minKoszt) newMax = e;
+      });
+      start = newMax;
+      console.log("Do cyklu wybieram element: ", newMax);
+    }
+    this.Rozwiazanie[start.y][start.x] = 0;
+    this.Cykl = [];
+    this.cyklRoz = false;
+    for (let i = 0; i < this.Koszty[start.y].length; i++) {
+      if (this.Rozwiazanie[start.y][i] != null && i != start.x && !this.cyklRoz)
+        path = this.path(
+          start,
+          { y: start.y, x: i },
+          this.Koszty.length + this.Koszty[start.y].length - 1,
+          "col",
+          start
+        );
+    }
+    console.table(this.Rozwiazanie);
+  };
+
+  hasInRow = elem => {
+    let flag = false;
+    for (let x = 0; x < this.Rozwiazanie[elem.y].length; x++) {
+      if (this.Rozwiazanie[elem.y][x] != null) {
         flag = true;
       }
-    });
+    }
     return flag;
   };
 
-  pierwszaNieBazowa = table => {
-    let obj = {};
-    this.Koszty.forEach((linia, x) =>
-      linia.forEach((element, y) => {
-        if (table[x][y] == null) {
-          obj = { x: x, y: y };
-        }
-      })
-    );
-    return obj;
+  hasInCol = elem => {
+    let flag = false;
+    for (let y = 0; y < this.Rozwiazanie.length; y++) {
+      if (this.Rozwiazanie[y][elem.x] != null) {
+        flag = true;
+      }
+    }
+    return flag;
   };
 
-  // jeżeli ta funkcja zwróci pustą tablicę to rozwiązanie jest optymalne
-  czyOptymalne = () => {
-    let table = this.table;
-    let kolumnaBaz = this.Kolumna.map(elem => null);
-    let wierszBaz = this.Wiersz.map(elem => null);
-    kolumnaBaz[0] = 0;
-
-    while (this.czyPuste(kolumnaBaz) || this.czyPuste(wierszBaz)) {
-      this.Koszty.forEach((linia, x) =>
-        linia.forEach((element, y) => {
-          if (table[x][y] != null) {
-            if (kolumnaBaz[x] == null && wierszBaz[y] != null)
-              kolumnaBaz[x] = this.Koszty[x][y] - wierszBaz[y];
-            else if (kolumnaBaz[x] != null && wierszBaz[y] == null)
-              wierszBaz[y] = this.Koszty[x][y] - kolumnaBaz[x];
-          }
-        })
-      );
+  path = (start, actual, depth, dir, prev) => {
+    let path = [];
+    if (actual.y == start.y && actual.x == start.x) {
+      console.log("cykl zakończony");
+      this.Cykl.push({
+        x: actual.x,
+        y: actual.y,
+        value: this.Rozwiazanie[actual.y][actual.x]
+      });
+      this.cyklRoz = true;
+      return [prev];
     }
-
-    let nieBazowe = [];
-    let pierw = this.pierwszaNieBazowa(table);
-    let value =
-      kolumnaBaz[pierw.x] + wierszBaz[pierw.y] - this.Koszty[pierw.x][pierw.y];
-    this.Koszty.forEach((linia, x) =>
-      linia.forEach((element, y) => {
-        if (
-          table[x][y] == null &&
-          kolumnaBaz[x] + wierszBaz[y] - this.Koszty[x][y] > 0
-        ) {
-          if (kolumnaBaz[x] + wierszBaz[y] - this.Koszty[x][y] == value) {
-            value = kolumnaBaz[x] + wierszBaz[y] - this.Koszty[x][y];
-            nieBazowe.push({
-              value: value,
-              x: x,
-              y: y,
-              koszt: this.Koszty[x][y]
-            });
-          } else if (kolumnaBaz[x] + wierszBaz[y] - this.Koszty[x][y] > value) {
-            nieBazowe = [];
-            value = kolumnaBaz[x] + wierszBaz[y] - this.Koszty[x][y];
-            nieBazowe.push({
-              value: value,
-              x: x,
-              y: y,
-              koszt: this.Koszty[x][y]
-            });
+    if (depth < 0) return null;
+    else if (!this.cyklRoz) {
+      if (dir == "col") {
+        if (this.hasInCol(actual)) {
+          for (let i = 0; i < this.Rozwiazanie.length; i++) {
+            if (this.Rozwiazanie[i][actual.x] != null && i != actual.y)
+              path.push(
+                this.path(
+                  start,
+                  { y: i, x: actual.x },
+                  depth - 1,
+                  "row",
+                  actual
+                )
+              );
           }
         }
-      })
-    );
-
-    return nieBazowe;
-  };
-
-  nextStep = (step, dir) => {
-    let nextStep = {};
-    if (dir) {
-      this.Wiersz.forEach((e, y) => {
-        if (y != step.y && this.table[step.x][y] != null) {
-          this.Kolumna.forEach((e, x) => {
-            if (this.table[x][y] != null && x != step.x) {
-              nextStep = {
-                value: this.table[step.x][y],
-                x: step.x,
-                y: y,
-                koszt: this.Koszty[step.x][y]
-              };
-            }
-          });
-        }
-      });
-    } else {
-      this.Kolumna.forEach((e, x) => {
-        if (x != step.x && this.table[x][step.y] != null) {
-          this.Wiersz.forEach((e, y) => {
-            if (this.table[x][y] != null && y != step.y) {
-              nextStep = {
-                value: this.table[x][step.y],
-                x: x,
-                y: step.y,
-                koszt: this.Koszty[x][step.y]
-              };
-            }
-          });
-        }
-      });
-    }
-    return nextStep;
-  };
-
-  cykl = () => {
-    let nieOptymalne = this.czyOptymalne();
-    if (nieOptymalne.length == 0) return 0;
-    table = this.table;
-    let baza = {};
-    let cykl = [];
-    if (nieOptymalne.length == 1) {
-      baza = nieOptymalne[0];
-    } else if (nieOptymalne.length > 1) {
-      let min = nieOptymalne[0];
-      nieOptymalne.forEach(elem => {
-        min = min.koszt > elem.koszt ? elem : min;
-      });
-      baza = min;
-    }
-    this.table[baza.x][baza.y] = 0;
-    cykl.push(baza);
-    let flag = true;
-    let step = this.nextStep(cykl[0], flag);
-    while (!(step.y == baza.y && step.x == baza.x)) {
-      cykl.push(step);
-      flag = !flag;
-      step = this.nextStep(cykl[cykl.length - 1], flag);
-    }
-    return cykl;
-  };
-
-  kolejnyKrok = () => {
-    let cykl = this.cykl();
-    let temp = this.table.map(e => e.map(e => e));
-
-    if (cykl == 0) {
-      console.log("optymalne");
-      console.table(this.table);
-      this.optymalne = true;
-      return this.table;
-    } else {
-      let min = cykl[1].value;
-      let flag = true;
-      cykl.forEach((e, index) => {
-        if (index % 2 == 1) {
-          if (e.value < min) min = e.value;
-        }
-      });
-      cykl.forEach((e, index) => {
-        if (index % 2 == 1 && index != 0) {
-          this.table[e.x][e.y] = this.table[e.x][e.y] - min;
-          if (flag && this.table[e.x][e.y] == 0) {
-            this.table[e.x][e.y] = null;
-            flag = false;
+      } else if (dir == "row") {
+        if (this.hasInRow(actual)) {
+          for (let i = 0; i < this.Rozwiazanie[actual.y].length; i++) {
+            if (this.Rozwiazanie[actual.y][i] != null && i != actual.x)
+              path.push(
+                this.path(
+                  start,
+                  { y: actual.y, x: i },
+                  depth - 1,
+                  "col",
+                  actual
+                )
+              );
           }
-        } else if (index % 2 == 0 && index != 0) {
-          this.table[e.x][e.y] = this.table[e.x][e.y] + min;
         }
-      });
-      this.table[cykl[0].x][cykl[0].y] = min;
-      console.table(temp);
-      return temp;
+      }
+      if (this.cyklRoz) {
+        this.Cykl.push({
+          x: actual.x,
+          y: actual.y,
+          value: this.Rozwiazanie[actual.y][actual.x]
+        });
+      }
+      return path;
+    }
+  };
+
+  elementMinimalnyCyklu = () => {
+    let min = { x: undefined, y: undefined, value: Infinity };
+    for (let i = 0; i < this.Cykl.length; i++) {
+      if (i % 2 == 1)
+        min =
+          min.value > this.Cykl[i].value
+            ? {
+                x: this.Cykl[i].x,
+                y: this.Cykl[i].y,
+                value: this.Cykl[i].value
+              }
+            : min;
+    }
+    return min;
+  };
+
+  moveTValue = () => {
+    let min = this.elementMinimalnyCyklu();
+
+    for (let i = 0; i < this.Cykl.length; i++) {
+      if (i % 2 == 0)
+        this.Rozwiazanie[this.Cykl[i].y][this.Cykl[i].x] += min.value;
+      if (i % 2 == 1)
+        this.Rozwiazanie[this.Cykl[i].y][this.Cykl[i].x] -= min.value;
+    }
+    this.Rozwiazanie[min.y][min.x] = null;
+    console.table(this.Rozwiazanie);
+  };
+
+  hasEmpty = table => {
+    for (let i = 0; i < table.length; i++) {
+      if (table[i] == null) return true;
+    }
+    return false;
+  };
+
+  kolejnyKrok = next => {
+    switch (next) {
+      case 0:
+        console.log("Optymalne");
+        break;
+      case 1:
+        this.katPolnocnoZachodni();
+      case 2:
+        this.czyOptymalne();
+      case 3:
+        this.najDodatnia();
+      case 4:
+
+      case 5:
+
+      default:
+        break;
     }
   };
 }
