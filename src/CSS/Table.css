@@ -1,0 +1,22 @@
+.tableRow {
+ display: flex;
+ width: 60vw;
+ flex-wrap: nowrap;
+}
+
+.tableCell {
+ flex-grow: 1;
+ width: 15vw;
+ border: 1px solid black
+}
+
+.tableBorder {
+ background-color: rgba(255, 255, 255, 0.705);
+ color: #282c34;
+ width: 60vw;
+ border: 2px solid black;
+}
+
+.tableTitle {
+ text-transform: uppercase;
+}
