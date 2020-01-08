@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -66,3 +67,27 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+=======
+# ZagadnieniaTransportowe
+
+Program do liczenia zagadnień transportowych
+
+Przykład użycia programu
+
+```javascript
+let table = [
+  [1, 2, 3, 4, 60],
+  [4, 3, 2, 0, 80],
+  [0, 2, 2, 1, 100],
+  [40, 60, 80, 60, 240]
+];
+const zagadnienie = new ZT(table);
+zagadnienie.katPolnocnoZachodni();
+
+while (!zagadnienie.optymalne) {
+  zagadnienie.kolejnyKrok();
+}
+```
+
+ten kod należy umieścić w pliku app.js lub wkleić do konsoli
+>>>>>>> e518373c09bf0593051792d6c6c2c1894792bc86
