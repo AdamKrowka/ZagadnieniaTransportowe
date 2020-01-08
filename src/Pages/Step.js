@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Table from "./Table";
+
 const Step = ({ handleNextStep, zt }) => {
   let data = { data: 0 };
   const [newData, setNewData] = useState(data);
@@ -18,7 +19,7 @@ const Step = ({ handleNextStep, zt }) => {
           NASTĘPNY
         </Link>
       </div>
-      <Table table={newData.data} title={newData.message}></Table>
+      <Table table={newData.data} title={newData.desc}></Table>
       {/* <Table table={zt.Rozwiazanie} title={newData.message}></Table> */}
     </>
   );

@@ -13,7 +13,7 @@ export class ZT {
     this.return = 0;
   }
 
-  setTable = table => {
+  setTableZT = table => {
     this.Tabela = table;
     // Filling Kolumna/Podaż table with last column from this.table table
     // Uzupełnianie Tabeli Podaż ostatnią columną z tabeli wprowadzonej do programu
@@ -25,6 +25,30 @@ export class ZT {
     // Uzupełnianie Tabeli Popyt ostatnim wierszem z tabeli wprowadzonej do programu
     for (let i = 0; i < this.Tabela[this.Tabela.length - 1].length - 1; i++) {
       this.Popyt.push(this.Tabela[this.Tabela.length - 1][i]);
+    }
+
+    let sumInRow = 0; // Popyt
+    let sumInCol = 0; // Podaż
+
+    this.Popyt.forEach(e => (sumInRow += e));
+    this.Podaz.forEach(e => (sumInCol += e));
+
+    if (sumInCol !== sumInRow) {
+      let diff = Math.abs(sumInCol - sumInRow);
+      if (sumInRow < sumInCol) {
+        this.Popyt.push(diff);
+        this.Tabela.forEach((e, index) => {
+          if (index === this.Tabela.length - 1) e.splice(e.length - 1, 0, diff);
+          else e.splice(e.length - 1, 0, 0);
+        });
+      } else if (sumInRow > sumInCol) {
+        let temptable = this.Tabela[0].map((e, index) => {
+          if (index === this.Tabela[0].length - 1) return diff;
+          return e;
+        });
+        this.Tabela.splice(this.Tabela.length - 1, 0, temptable);
+        this.Podaz.push(diff);
+      }
     }
 
     // Uzupełnianie tabeli Kosztów
@@ -297,54 +321,69 @@ export class ZT {
             this.kosztOptymalny += this.Rozwiazanie[i][j] * this.Koszty[i][j];
           }
         }
-        console.log("Optymalne");
-        console.table(this.Tabela);
         return {
           data: this.getRozwiazanie(),
-          caseIndex: 0
+          caseIndex: 0,
+          desc: "Optymalne"
         };
       case 1:
-        console.log("kąt północno zachodni");
         this.katPolnocnoZachodni();
         this.next = 2;
-        return { data: this.Rozwiazanie, caseIndex: 1 };
+        return {
+          data: this.Rozwiazanie,
+          caseIndex: 1,
+          desc: "kąt północno zachodni"
+        };
       case 2:
-        console.log("obliczam Potencjały dla bazowych");
         this.return = this.bazowePotencjaly();
         this.next = 3;
-        return { data: this.return, caseIndex: 2 };
+        return {
+          data: this.return,
+          caseIndex: 2,
+          desc: "obliczam Potencjały dla bazowych"
+        };
 
       case 3:
-        console.log("obliczam potencjały dla nie bazowych");
         this.return = this.nieBazowePotencjaly();
         this.next = 4;
-        return { data: this.return, caseIndex: 3 };
+        return {
+          data: this.return,
+          caseIndex: 3,
+          desc: "obliczam potencjały dla nie bazowych"
+        };
       case 4:
-        console.log("Sprawdzam optymalność");
         if (this.czyOptymalne()) {
           this.next = 0;
           return this.kolejnyKrok();
         } else {
           this.next = 5;
-          return { data: this.kolejnyKrok(), caseIndex: 5 };
+          return {
+            data: this.kolejnyKrok(),
+            caseIndex: 5,
+            desc: "nie optymalne"
+          };
         }
       case 5:
-        console.log("nie optymalne");
-        console.log("szukam największej dodatniej ");
         this.return = this.najDodatnia(this.return);
         this.next = 6;
         return this.return;
 
       case 6:
-        console.log("tworzę cykl po kratkach nie bazowych");
         this.cykl();
         this.next = 7;
-        return { data: this.Cykl, caseIndex: 6 };
+        return {
+          data: this.Cykl,
+          caseIndex: 6,
+          desc: "tworzę cykl po kratkach nie bazowych"
+        };
       case 7:
-        console.log("Przemieszczam wartość t po cyklu");
         this.moveTValue();
         this.next = 2;
-        return { data: this.Rozwiazanie, caseIndex: 7 };
+        return {
+          data: this.Rozwiazanie,
+          caseIndex: 7,
+          desc: "Przemieszczam wartość t po cyklu"
+        };
       default:
         break;
     }

@@ -18,7 +18,7 @@ function App() {
   const [table, setTable] = useState([[]]);
   const [resolution, setResolution] = useState([[]]);
   const [cost, setCost] = useState(0);
-  let tabelaTestowa = [];
+  const [tablica, setTablica] = useState([]);
   const handleCreate = size => {
     let tab = [];
     for (let i = 0; i < +size.row; i++) {
@@ -28,6 +28,7 @@ function App() {
       }
       tab.push(row);
     }
+    console.table(tab);
     setTable(tab);
   };
 
@@ -36,17 +37,19 @@ function App() {
   };
 
   const getResolution = e => {
-    zt.setTable(table);
+    zt.setTableZT(table);
+
+    console.table(table);
     while (!zt.Optymalne) {
       zt.kolejnyKrok();
     }
     setResolution(zt.getRozwiazanie());
-    tabelaTestowa = zt.Tabela;
     setCost(zt.kosztOptymalny);
+    setTablica(table);
   };
 
   const handleStart = () => {
-    zt.setTable(table);
+    zt.setTableZT(table);
   };
   const handleNextStep = data => {
     // setNewData(data);
@@ -75,7 +78,7 @@ function App() {
               <Step handleNextStep={handleNextStep} zt={zt}></Step>
             </Route>
             <Route path="/resolution">
-              <Table table={zt.Tabela} title="Tablela kosztów"></Table>
+              <Table table={tablica} title="Tablela kosztów"></Table>
               <Table table={resolution} title="Tabela wyników"></Table>
               <h4>Koszt jest równy: {cost}</h4>
 

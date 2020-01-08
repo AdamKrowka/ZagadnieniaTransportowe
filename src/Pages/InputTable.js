@@ -10,6 +10,7 @@ const InputTable = ({ table, handleSendData, getResolution, handleStart }) => {
     let tab = tempTable.map(e => e);
     tab[i][j] = +e.target.value;
     tempTable = tab;
+    console.table(tempTable);
     handleSendData(tempTable);
   };
 
