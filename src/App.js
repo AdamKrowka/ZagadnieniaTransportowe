@@ -13,12 +13,13 @@ import Table from "./Pages/Table";
 import Step from "./Pages/Step.js";
 import { ZT } from "./ZT";
 
-const zt = new ZT();
 function App() {
+  const zt = new ZT();
   const [table, setTable] = useState([[]]);
   const [resolution, setResolution] = useState([[]]);
   const [cost, setCost] = useState(0);
   const [tablica, setTablica] = useState([]);
+  const [data, setData] = useState();
   const handleCreate = size => {
     let tab = [];
     for (let i = 0; i < +size.row; i++) {
@@ -28,7 +29,6 @@ function App() {
       }
       tab.push(row);
     }
-    console.table(tab);
     setTable(tab);
   };
 
@@ -39,7 +39,7 @@ function App() {
   const getResolution = e => {
     zt.setTableZT(table);
 
-    console.table(table);
+    console.table(zt.Rozwiazanie);
     while (!zt.Optymalne) {
       zt.kolejnyKrok();
     }
@@ -50,17 +50,14 @@ function App() {
 
   const handleStart = () => {
     zt.setTableZT(table);
-  };
-  const handleNextStep = data => {
-    // setNewData(data);
-    console.table(data);
+    setData(zt.kolejnyKrok());
   };
 
   return (
     <Router basename="/">
       <div className="App">
         <header className="App-header">
-          <h1>Zagadnienie Transoprtowe</h1>
+          <h1>Zagadnienie Transportowe</h1>
           <Redirect to="/"></Redirect>
           <Switch>
             <Route exact path="/">
@@ -75,7 +72,7 @@ function App() {
               ></InputTable>
             </Route>
             <Route path="/step">
-              <Step handleNextStep={handleNextStep} zt={zt}></Step>
+              <Step zt={zt}></Step>
             </Route>
             <Route path="/resolution">
               <Table table={tablica} title="Tablela kosztów"></Table>

@@ -11,7 +11,7 @@
 }
 
 .tableBorder {
- background-color: rgba(255, 255, 255, 0.705);
+ background-color: rgb(255, 255, 255);
  color: #282c34;
  width: 60vw;
  border: 2px solid black;

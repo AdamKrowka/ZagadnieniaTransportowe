@@ -1,6 +1,7 @@
 .App {
   text-align: center;
   background-color: #282c34;
+  padding-bottom: 20px;
 }
 
 input {
@@ -46,7 +47,8 @@ a:visited {
   color: #282c34;
 }
 
-a {
+a,
+button {
   display: block;
   text-decoration: none;
   background-color: #fff;
@@ -58,7 +60,7 @@ a {
 }
 
 .App-header {
-  min-height: 100vh;
+  min-height: calc(100vh - 20px);
   display: flex;
   flex-direction: column;
   align-items: center;

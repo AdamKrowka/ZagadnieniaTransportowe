@@ -1,6 +1,6 @@
 import React from "react";
 import "../CSS/Table.css";
-const Table = ({ table = [[]], title }) => {
+const Table = ({ table, title }) => {
   let tabViev = [];
   for (let i = 0; i < table.length; i++) {
     let row = [];
@@ -29,11 +29,13 @@ const Table = ({ table = [[]], title }) => {
       </div>
     );
   }
-
+  console.table(table.length);
   return (
     <>
       <h3 className="tableTitle">{title}</h3>
-      <div className="tableBorder">{tabViev}</div>
+      <div className="tableBorder">
+        {table.length !== undefined ? tabViev : <div></div>}
+      </div>
     </>
   );
 };

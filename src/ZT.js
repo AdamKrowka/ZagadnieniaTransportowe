@@ -42,16 +42,16 @@ export class ZT {
           else e.splice(e.length - 1, 0, 0);
         });
       } else if (sumInRow > sumInCol) {
-        let temptable = this.Tabela[0].map((e, index) => {
-          if (index === this.Tabela[0].length - 1) return diff;
-          return e;
-        });
+        let temptable = this.Tabela[0].map((e, index) =>
+          index === this.Tabela[0].length - 1 ? diff : 0
+        );
         this.Tabela.splice(this.Tabela.length - 1, 0, temptable);
         this.Podaz.push(diff);
       }
     }
 
     // Uzupełnianie tabeli Kosztów
+    this.Koszty = [];
     for (let i = 0; i < this.Tabela.length - 1; i++) {
       let row = [];
       for (let j = 0; j < this.Tabela[i].length - 1; j++)
@@ -218,8 +218,8 @@ export class ZT {
     let path = [];
     if (actual.y === start.y && actual.x === start.x) {
       this.Cykl.push({
-        x: actual.x,
         y: actual.y,
+        x: actual.x,
         value: this.Rozwiazanie[actual.y][actual.x]
       });
       this.cyklRoz = true;
@@ -234,7 +234,7 @@ export class ZT {
               path.push(
                 this.path(
                   start,
-                  { y: i, x: actual.x },
+                  { x: actual.x, y: i },
                   depth - 1,
                   "row",
                   actual
@@ -249,7 +249,7 @@ export class ZT {
               path.push(
                 this.path(
                   start,
-                  { y: actual.y, x: i },
+                  { x: i, y: actual.y },
                   depth - 1,
                   "col",
                   actual
@@ -260,8 +260,8 @@ export class ZT {
       }
       if (this.cyklRoz) {
         this.Cykl.push({
-          x: actual.x,
           y: actual.y,
+          x: actual.x,
           value: this.Rozwiazanie[actual.y][actual.x]
         });
       }
@@ -305,7 +305,7 @@ export class ZT {
   };
 
   getRozwiazanie = () => {
-    let table = this.Tabela.map(e => e);
+    let table = this.Tabela.map(row => row.map(e => e));
     for (let i = 0; i < this.Rozwiazanie.length; i++)
       for (let j = 0; j < this.Rozwiazanie[i].length; j++)
         table[i][j] = this.Rozwiazanie[i][j];
@@ -372,7 +372,7 @@ export class ZT {
         this.cykl();
         this.next = 7;
         return {
-          data: this.Cykl,
+          data: { cykl: this.Cykl, t: this.elementMinimalnyCyklu() },
           caseIndex: 6,
           desc: "tworzę cykl po kratkach nie bazowych"
         };
