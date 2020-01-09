@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/ZagadnieniaTransportowe/precache-manifest.3f6c8e4080b9e290b63a16521945108f.js"
+  "/ZagadnieniaTransportowe/precache-manifest.7e90f1fbe85a87468624b541e7812296.js"
 );
 
 self.addEventListener('message', (event) => {

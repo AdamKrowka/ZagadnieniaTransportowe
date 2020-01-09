@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/ZagadnieniaTransportowe/static/css/main.44c06c4f.chunk.css",
-    "main.js": "/ZagadnieniaTransportowe/static/js/main.c331407c.chunk.js",
-    "main.js.map": "/ZagadnieniaTransportowe/static/js/main.c331407c.chunk.js.map",
+    "main.js": "/ZagadnieniaTransportowe/static/js/main.6be09ac5.chunk.js",
+    "main.js.map": "/ZagadnieniaTransportowe/static/js/main.6be09ac5.chunk.js.map",
     "runtime-main.js": "/ZagadnieniaTransportowe/static/js/runtime-main.cabe3ebd.js",
     "runtime-main.js.map": "/ZagadnieniaTransportowe/static/js/runtime-main.cabe3ebd.js.map",
     "static/js/2.599ee11f.chunk.js": "/ZagadnieniaTransportowe/static/js/2.599ee11f.chunk.js",
     "static/js/2.599ee11f.chunk.js.map": "/ZagadnieniaTransportowe/static/js/2.599ee11f.chunk.js.map",
     "index.html": "/ZagadnieniaTransportowe/index.html",
-    "precache-manifest.3f6c8e4080b9e290b63a16521945108f.js": "/ZagadnieniaTransportowe/precache-manifest.3f6c8e4080b9e290b63a16521945108f.js",
+    "precache-manifest.7e90f1fbe85a87468624b541e7812296.js": "/ZagadnieniaTransportowe/precache-manifest.7e90f1fbe85a87468624b541e7812296.js",
     "service-worker.js": "/ZagadnieniaTransportowe/service-worker.js",
     "static/css/main.44c06c4f.chunk.css.map": "/ZagadnieniaTransportowe/static/css/main.44c06c4f.chunk.css.map",
     "static/js/2.599ee11f.chunk.js.LICENSE": "/ZagadnieniaTransportowe/static/js/2.599ee11f.chunk.js.LICENSE"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.cabe3ebd.js",
     "static/js/2.599ee11f.chunk.js",
     "static/css/main.44c06c4f.chunk.css",
-    "static/js/main.c331407c.chunk.js"
+    "static/js/main.6be09ac5.chunk.js"
   ]
 }
