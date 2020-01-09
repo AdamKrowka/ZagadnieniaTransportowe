@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "dbde67f25ae7f810ae69328a84fd6115",
+    "revision": "41d81157b12e8dec2fcdc1b47971f531",
     "url": "/ZagadnieniaTransportowe/index.html"
   },
   {
-    "revision": "4d1b4c5c5d3a9b681d79",
+    "revision": "0b4fe39d8814668a902c",
     "url": "/ZagadnieniaTransportowe/static/css/main.44c06c4f.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/ZagadnieniaTransportowe/static/js/2.9ff90463.chunk.js.LICENSE"
   },
   {
-    "revision": "4d1b4c5c5d3a9b681d79",
-    "url": "/ZagadnieniaTransportowe/static/js/main.3885967a.chunk.js"
+    "revision": "0b4fe39d8814668a902c",
+    "url": "/ZagadnieniaTransportowe/static/js/main.e71915ae.chunk.js"
   },
   {
     "revision": "9dfafe7073256362ac37",
